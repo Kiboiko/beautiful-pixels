@@ -15,8 +15,9 @@ body {
     background-color: #1a1a1a;
     position: fixed;
     left: 0;
-    top: 0;
-    bottom: 0;
+    top: 10px;
+    bottom: 10px;
+    border-radius: 0 20px 20px 0;
     overflow-y: auto;
 }
 
@@ -75,6 +76,7 @@ body {
 }
 
 .save-btn {
+    width: 200px;
     padding: 10px 20px;
     background-color: #019b3f;
     color: white;
@@ -83,6 +85,7 @@ body {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s;
+    margin-bottom: 10px;
 }
 
 .save-btn:hover {
