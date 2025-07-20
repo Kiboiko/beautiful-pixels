@@ -2,11 +2,58 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
     background-color: #111;
     overflow: hidden;
+    font-family: Arial, sans-serif;
+    color: #fff;
+}
+
+.ready-arts {
+    width: 200px;
+    padding: 20px;
+    background-color: #1a1a1a;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+}
+
+.ready-arts h2 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    color: #ddd;
+}
+
+.arts-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.arts-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+}
+
+.arts-list li:hover {
+    color: #4af;
+}
+
+.main-content {
+    margin-left: 200px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.pixel-grid-container {
+    margin-bottom: 20px;
 }
 
 .pixel-grid {
@@ -25,4 +72,23 @@ body {
 
 .pixel:hover {
     transition: background-color 0s; 
+}
+
+.save-btn {
+    padding: 10px 20px;
+    background-color: #019b3f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.save-btn:hover {
+    background-color: #03cd54;
+}
+
+.save-btn:active {
+    background-color: #016a2b;
 }
