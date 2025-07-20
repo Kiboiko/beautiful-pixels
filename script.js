@@ -2,6 +2,8 @@ const pixelGrid = document.getElementById('pixelGrid');
 const artsList = document.getElementById('artsList');
 const saveBtn = document.getElementById('saveBtn');
 const clrBtn = document.getElementById('clrBtn');
+const palette = document.getElementById('palette');
+let selectedColor = '#111';
 const gridSize = 40;
 const pixelCount = gridSize * gridSize;
 const defaultColor = '#222';
@@ -13,7 +15,6 @@ const gridState = {
     
     save: function() {
         const currentArt = this.pixels.map(row => [...row]);
-        
         const isEmpty = currentArt.every(row => 
             row.every(pixel => pixel === defaultColor)
         );
@@ -25,7 +26,6 @@ const gridState = {
         
         const timestamp = new Date().toISOString();
         const savedArts = JSON.parse(localStorage.getItem('pixelArts') || '[]');
-        
         savedArts.unshift({
             id: timestamp,
             data: currentArt
@@ -49,13 +49,37 @@ const gridState = {
         
         savedArts.forEach((art, index) => {
             const li = document.createElement('li');
-            li.textContent = `Рисунок ${index + 1} (${new Date(art.id).toLocaleString()})`;
-            li.addEventListener('click', () => this.loadArt(art.data));
+            
+            const artInfo = document.createElement('span');
+            artInfo.textContent = `Рисунок ${index + 1} (${new Date(art.id).toLocaleString()})`;
+            artInfo.addEventListener('click', () => this.loadArt(art.data));
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = '×';
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.deleteArt(art.id);
+            });
+            
+            li.appendChild(artInfo);
+            li.appendChild(deleteBtn);
             artsList.appendChild(li);
         });
     },
     
+    deleteArt: function(id) {
+        
+        
+        const savedArts = JSON.parse(localStorage.getItem('pixelArts') || '[]');
+        const updatedArts = savedArts.filter(art => art.id !== id);
+        
+        localStorage.setItem('pixelArts', JSON.stringify(updatedArts));
+        this.loadArts();
+    },
+    
     loadArt: function(artData) {
+        this.clear(false);
         for (let y = 0; y < gridSize; y++) {
             for (let x = 0; x < gridSize; x++) {
                 this.pixels[y][x] = artData[y][x];
@@ -68,6 +92,7 @@ const gridState = {
     },
     
     clear: function(confirmClear = true) {
+        
         for (let y = 0; y < gridSize; y++) {
             for (let x = 0; x < gridSize; x++) {
                 this.pixels[y][x] = defaultColor;
@@ -80,6 +105,7 @@ const gridState = {
     }
 };
 
+// Остальной код остается без изменений
 function initGrid() {
     pixelGrid.innerHTML = '';
     
@@ -138,20 +164,67 @@ document.addEventListener('mouseup', () => {
 
 document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-saveBtn.addEventListener('click', () => {
-    gridState.save();
-});
+saveBtn.addEventListener('click', () => gridState.save());
+clrBtn.addEventListener('click', () => gridState.clear());
 
-clrBtn.addEventListener('click', () => {
-    gridState.clear();
-});
+function generateColorPalette() {
+    const colors = [
+        '#FF0000', '#00FF00', '#0000FF', 
+        '#FFFF00', '#FF00FF', '#00FFFF',
 
-function getPastelColor() {
-    const r = Math.floor(Math.random() * 128 + 128);
-    const g = Math.floor(Math.random() * 128 + 128);
-    const b = Math.floor(Math.random() * 128 + 128);
-    return `rgb(${r}, ${g}, ${b})`;
+        '#FFB6C1', '#FFD700', '#98FB98',
+        '#ADD8E6', '#DDA0DD', '#FFA07A',
+
+        '#FFFFFF', '#C0C0C0', '#808080',
+        '#000000'
+    ];
+    palette.innerHTML = '';
+
+    colors.forEach(color =>{
+        const li = document.createElement('li');
+        li.className = 'color-item';
+
+        const radio = document.createElement('input');
+        radio.type = "radio";
+        radio.name = 'color';
+        radio.className = 'color-radio';
+        radio.value = color;
+
+        radio.addEventListener('change', () => {
+            selectedColor = color;
+        });
+
+        if (color === colors[0]) {
+            radio.checked = true;
+            selectedColor = color;
+        }
+        
+        const preview = document.createElement('div');
+        preview.className = 'color-preview';
+        preview.style.backgroundColor = color;
+        
+        const label = document.createElement('span');
+        label.className = 'color-label';
+        label.textContent = color;
+        
+        li.appendChild(radio);
+        li.appendChild(preview);
+        li.appendChild(label);
+        palette.appendChild(li);
+    });
 }
 
+
+
+function getPastelColor() {
+    // const r = Math.floor(Math.random() * 128 + 128);
+    // const g = Math.floor(Math.random() * 128 + 128);
+    // const b = Math.floor(Math.random() * 128 + 128);
+    // return `rgb(${r}, ${g}, ${b})`;
+    return selectedColor;
+}
+
+
+generateColorPalette();
 initGrid();
 gridState.loadArts();
